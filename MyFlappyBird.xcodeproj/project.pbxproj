@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D115B8D61A8566E90016C273 /* foreground.png in Resources */ = {isa = PBXBuildFile; fileRef = D115B8D51A8566E90016C273 /* foreground.png */; };
+		D115B8D81A856C8E0016C273 /* foreground2.png in Resources */ = {isa = PBXBuildFile; fileRef = D115B8D71A856C8E0016C273 /* foreground2.png */; };
+		D11850F81A8944DB00252C72 /* backup.txt in Sources */ = {isa = PBXBuildFile; fileRef = D11850F71A8944DB00252C72 /* backup.txt */; };
+		D12B65881A870004007AACB8 /* explode1.png in Resources */ = {isa = PBXBuildFile; fileRef = D12B65831A870004007AACB8 /* explode1.png */; };
+		D12B65891A870004007AACB8 /* explode2.png in Resources */ = {isa = PBXBuildFile; fileRef = D12B65841A870004007AACB8 /* explode2.png */; };
+		D12B658A1A870004007AACB8 /* explode3.png in Resources */ = {isa = PBXBuildFile; fileRef = D12B65851A870004007AACB8 /* explode3.png */; };
+		D12B658B1A870004007AACB8 /* explode4.png in Resources */ = {isa = PBXBuildFile; fileRef = D12B65861A870004007AACB8 /* explode4.png */; };
+		D12B658C1A870004007AACB8 /* explode5.png in Resources */ = {isa = PBXBuildFile; fileRef = D12B65871A870004007AACB8 /* explode5.png */; };
 		D174FA801A84C2C700F1BE64 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D174FA7F1A84C2C700F1BE64 /* AppDelegate.swift */; };
 		D174FA821A84C2C700F1BE64 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = D174FA811A84C2C700F1BE64 /* GameScene.sks */; };
 		D174FA841A84C2C700F1BE64 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = D174FA831A84C2C700F1BE64 /* GameScene.swift */; };
@@ -15,6 +23,15 @@
 		D174FA8B1A84C2C700F1BE64 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D174FA8A1A84C2C700F1BE64 /* Images.xcassets */; };
 		D174FA8E1A84C2C700F1BE64 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = D174FA8C1A84C2C700F1BE64 /* LaunchScreen.xib */; };
 		D174FA9A1A84C2C700F1BE64 /* MyFlappyBirdTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D174FA991A84C2C700F1BE64 /* MyFlappyBirdTests.swift */; };
+		D174FAA81A84C65100F1BE64 /* bg.png in Resources */ = {isa = PBXBuildFile; fileRef = D174FAA31A84C65100F1BE64 /* bg.png */; };
+		D174FAA91A84C65100F1BE64 /* flappy1.png in Resources */ = {isa = PBXBuildFile; fileRef = D174FAA41A84C65100F1BE64 /* flappy1.png */; };
+		D174FAAA1A84C65100F1BE64 /* flappy2.png in Resources */ = {isa = PBXBuildFile; fileRef = D174FAA51A84C65100F1BE64 /* flappy2.png */; };
+		D174FAAB1A84C65100F1BE64 /* pipe1.png in Resources */ = {isa = PBXBuildFile; fileRef = D174FAA61A84C65100F1BE64 /* pipe1.png */; };
+		D174FAAC1A84C65100F1BE64 /* pipe2.png in Resources */ = {isa = PBXBuildFile; fileRef = D174FAA71A84C65100F1BE64 /* pipe2.png */; };
+		D18F017C1A890D54007C5650 /* mizufalp.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D18F017B1A890D31007C5650 /* mizufalp.ttf */; };
+		D18F017D1A890D55007C5650 /* mizufalp.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D18F017B1A890D31007C5650 /* mizufalp.ttf */; };
+		D18F017F1A8915A0007C5650 /* BMutopia.TTF in Resources */ = {isa = PBXBuildFile; fileRef = D18F017E1A89155F007C5650 /* BMutopia.TTF */; };
+		D18F01801A8915A1007C5650 /* BMutopia.TTF in Resources */ = {isa = PBXBuildFile; fileRef = D18F017E1A89155F007C5650 /* BMutopia.TTF */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,6 +45,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		D115B8D51A8566E90016C273 /* foreground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = foreground.png; sourceTree = "<group>"; };
+		D115B8D71A856C8E0016C273 /* foreground2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = foreground2.png; sourceTree = "<group>"; };
+		D11850F71A8944DB00252C72 /* backup.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = backup.txt; sourceTree = "<group>"; };
+		D12B65831A870004007AACB8 /* explode1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = explode1.png; sourceTree = "<group>"; };
+		D12B65841A870004007AACB8 /* explode2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = explode2.png; sourceTree = "<group>"; };
+		D12B65851A870004007AACB8 /* explode3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = explode3.png; sourceTree = "<group>"; };
+		D12B65861A870004007AACB8 /* explode4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = explode4.png; sourceTree = "<group>"; };
+		D12B65871A870004007AACB8 /* explode5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = explode5.png; sourceTree = "<group>"; };
 		D174FA7A1A84C2C700F1BE64 /* MyFlappyBird.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyFlappyBird.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D174FA7E1A84C2C700F1BE64 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D174FA7F1A84C2C700F1BE64 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -40,6 +65,14 @@
 		D174FA931A84C2C700F1BE64 /* MyFlappyBirdTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyFlappyBirdTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D174FA981A84C2C700F1BE64 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D174FA991A84C2C700F1BE64 /* MyFlappyBirdTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyFlappyBirdTests.swift; sourceTree = "<group>"; };
+		D174FAA31A84C65100F1BE64 /* bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bg.png; sourceTree = "<group>"; };
+		D174FAA41A84C65100F1BE64 /* flappy1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = flappy1.png; sourceTree = "<group>"; };
+		D174FAA51A84C65100F1BE64 /* flappy2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = flappy2.png; sourceTree = "<group>"; };
+		D174FAA61A84C65100F1BE64 /* pipe1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pipe1.png; sourceTree = "<group>"; };
+		D174FAA71A84C65100F1BE64 /* pipe2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pipe2.png; sourceTree = "<group>"; };
+		D18F01741A89085B007C5650 /* MyFlappyBird-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MyFlappyBird-Bridging-Header.h"; sourceTree = "<group>"; };
+		D18F017B1A890D31007C5650 /* mizufalp.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = mizufalp.ttf; sourceTree = "<group>"; };
+		D18F017E1A89155F007C5650 /* BMutopia.TTF */ = {isa = PBXFileReference; lastKnownFileType = file; path = BMutopia.TTF; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +96,21 @@
 		D174FA711A84C2C700F1BE64 = {
 			isa = PBXGroup;
 			children = (
+				D11850F71A8944DB00252C72 /* backup.txt */,
+				D12B65831A870004007AACB8 /* explode1.png */,
+				D12B65841A870004007AACB8 /* explode2.png */,
+				D12B65851A870004007AACB8 /* explode3.png */,
+				D12B65861A870004007AACB8 /* explode4.png */,
+				D12B65871A870004007AACB8 /* explode5.png */,
+				D18F017E1A89155F007C5650 /* BMutopia.TTF */,
+				D18F017B1A890D31007C5650 /* mizufalp.ttf */,
+				D174FAA31A84C65100F1BE64 /* bg.png */,
+				D174FAA41A84C65100F1BE64 /* flappy1.png */,
+				D115B8D51A8566E90016C273 /* foreground.png */,
+				D174FAA51A84C65100F1BE64 /* flappy2.png */,
+				D115B8D71A856C8E0016C273 /* foreground2.png */,
+				D174FAA61A84C65100F1BE64 /* pipe1.png */,
+				D174FAA71A84C65100F1BE64 /* pipe2.png */,
 				D174FA7C1A84C2C700F1BE64 /* MyFlappyBird */,
 				D174FA961A84C2C700F1BE64 /* MyFlappyBirdTests */,
 				D174FA7B1A84C2C700F1BE64 /* Products */,
@@ -89,6 +137,7 @@
 				D174FA8A1A84C2C700F1BE64 /* Images.xcassets */,
 				D174FA8C1A84C2C700F1BE64 /* LaunchScreen.xib */,
 				D174FA7D1A84C2C700F1BE64 /* Supporting Files */,
+				D18F01741A89085B007C5650 /* MyFlappyBird-Bridging-Header.h */,
 			);
 			path = MyFlappyBird;
 			sourceTree = "<group>";
@@ -198,10 +247,24 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D174FAAA1A84C65100F1BE64 /* flappy2.png in Resources */,
+				D12B65881A870004007AACB8 /* explode1.png in Resources */,
+				D174FAA81A84C65100F1BE64 /* bg.png in Resources */,
+				D18F017F1A8915A0007C5650 /* BMutopia.TTF in Resources */,
+				D115B8D81A856C8E0016C273 /* foreground2.png in Resources */,
 				D174FA8E1A84C2C700F1BE64 /* LaunchScreen.xib in Resources */,
+				D12B658C1A870004007AACB8 /* explode5.png in Resources */,
+				D18F017C1A890D54007C5650 /* mizufalp.ttf in Resources */,
+				D12B658A1A870004007AACB8 /* explode3.png in Resources */,
+				D174FAAB1A84C65100F1BE64 /* pipe1.png in Resources */,
 				D174FA8B1A84C2C700F1BE64 /* Images.xcassets in Resources */,
+				D174FAAC1A84C65100F1BE64 /* pipe2.png in Resources */,
+				D115B8D61A8566E90016C273 /* foreground.png in Resources */,
 				D174FA821A84C2C700F1BE64 /* GameScene.sks in Resources */,
+				D12B65891A870004007AACB8 /* explode2.png in Resources */,
 				D174FA891A84C2C700F1BE64 /* Main.storyboard in Resources */,
+				D12B658B1A870004007AACB8 /* explode4.png in Resources */,
+				D174FAA91A84C65100F1BE64 /* flappy1.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -209,6 +272,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D18F017D1A890D55007C5650 /* mizufalp.ttf in Resources */,
+				D18F01801A8915A1007C5650 /* BMutopia.TTF in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -220,6 +285,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D174FA841A84C2C700F1BE64 /* GameScene.swift in Sources */,
+				D11850F81A8944DB00252C72 /* backup.txt in Sources */,
 				D174FA861A84C2C700F1BE64 /* GameViewController.swift in Sources */,
 				D174FA801A84C2C700F1BE64 /* AppDelegate.swift in Sources */,
 			);
@@ -346,9 +412,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = MyFlappyBird/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "MyFlappyBird/MyFlappyBird-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -356,9 +425,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = MyFlappyBird/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "MyFlappyBird/MyFlappyBird-Bridging-Header.h";
 			};
 			name = Release;
 		};
@@ -415,6 +486,7 @@
 				D174FA9F1A84C2C700F1BE64 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		D174FAA01A84C2C700F1BE64 /* Build configuration list for PBXNativeTarget "MyFlappyBirdTests" */ = {
 			isa = XCConfigurationList;
@@ -423,6 +495,7 @@
 				D174FAA21A84C2C700F1BE64 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

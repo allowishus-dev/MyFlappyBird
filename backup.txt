@@ -12,25 +12,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // global holder for bird sprite, global to detect collisions
     var bird = SKSpriteNode()
-
+    
     var pointBoard = SKLabelNode()
-    var highBoard = SKLabelNode()
-
     var status = SKLabelNode()
     var restart = SKLabelNode()
     
-    var topPipe = SKSpriteNode()
-    var bottomPipe = SKSpriteNode()
-    
     // global holder for bird animations, global to be able to change the animation
     var alternateTexture = SKAction()
- 
+    
     var point = -1
-    var high = 0
     
     var collision = false
-
-    var stopped = false
+    
     // ???
     let birdGroup:UInt32 = 1
     let objectGroup:UInt32 = 2
@@ -43,16 +36,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // ????
         self.physicsWorld.contactDelegate = self
         
+        restartGameScene()
+    }
+    
+    func restartGameScene(){
         createGround()
         createBackground()
         createForeground()
         createPointBoard()
         createStatus()
-        
-        restartGameScene()
-    }
-    
-    func restartGameScene(){
         createBird()
         
         var spawnPipes = SKAction.runBlock { () -> Void in
@@ -63,10 +55,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         var runAll = SKAction.sequence([spawnPipes, sleepAction])
         var repeatForever = SKAction.repeatActionForever(runAll)
         self.runAction(repeatForever)
-
+        
     }
     
     func didBeginContact(contact: SKPhysicsContact) {
+        println("Collision!")
+        
         var explodeTexture1 = SKTexture(imageNamed: "explode1.png")
         var explodeTexture2 = SKTexture(imageNamed: "explode2.png")
         var explodeTexture3 = SKTexture(imageNamed: "explode3.png")
@@ -78,7 +72,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         bird.runAction(repeatAndKill)
         
         collision = true
-
+        
     }
     
     func createGround(){
@@ -100,22 +94,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pointBoard.position = CGPointMake(self.frame.size.width/2+208, self.frame.size.height/2+350)
         pointBoard.horizontalAlignmentMode = .Right
         addChild(pointBoard)
-
-        highBoard = SKLabelNode(fontNamed: "MizuFontAlphabet")
-        highBoard.text = "hi 0"
-        highBoard.fontSize = 36
-        highBoard.position = CGPointMake(self.frame.size.width/2-208, self.frame.size.height/2+350)
-        highBoard.horizontalAlignmentMode = .Left
-        addChild(highBoard)
-
+        
     }
-
+    
     func createStatus(){
         status = SKLabelNode(fontNamed: "MizuFontAlphabet")
         status.text = ""
         status.fontSize = 60
         status.position = CGPointMake(self.frame.size.width/2, self.frame.size.height/2+40)
-
+        
         addChild(status)
         
         restart = SKLabelNode(fontNamed: "MizuFontAlphabet")
@@ -152,68 +139,68 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         var gapHeight = bird.size.height * 4
         var movementAmount = arc4random() % UInt32(size.height/2)
         
+        println("movementAmount was: \(movementAmount)")
+        
         if (collision == true){
             
             status.text = "game over!"
             
             restart.text = "restart"
             
-            stopped = true
-            
             bird.removeFromParent()
-            topPipe.removeFromParent()
-            bottomPipe.removeFromParent()
             
         }
         else {
             point = point + 1
+            
             pointBoard.text = String(point)
             
-            if (high < point){
-                high = point
-                highBoard.text = "hi " + String(high)
-            }
-            
-            var pipeOffset = CGFloat(movementAmount) - size.height/4
-        
-            var topPipeTexture = SKTexture(imageNamed: "pipe1.png")
-            topPipe = SKSpriteNode(texture: topPipeTexture)
-            topPipe.position = CGPoint(x: size.width, y: size.height/2 + topPipe.size.height/2 + gapHeight/2 + pipeOffset)
-            topPipe.zPosition = 0
-        
-            var bottomPipeTexture = SKTexture(imageNamed: "pipe2.png")
-            bottomPipe = SKSpriteNode(texture: bottomPipeTexture)
-        
-            bottomPipe.position = CGPoint(x: size.width, y: size.height/2 - bottomPipe.size.height/2 - gapHeight/2 + pipeOffset)
-            bottomPipe.zPosition = 0
-        
-            // collisions
-            topPipe.physicsBody = SKPhysicsBody(rectangleOfSize: topPipe.size)
-            topPipe.physicsBody?.categoryBitMask = objectGroup
-            topPipe.physicsBody?.dynamic = false
-        
-            bottomPipe.physicsBody = SKPhysicsBody(rectangleOfSize: bottomPipe.size)
-            bottomPipe.physicsBody?.categoryBitMask = objectGroup
-            bottomPipe.physicsBody?.dynamic = false
-        
-            // move pipes
-            var movePipes = SKAction.moveByX(-size.width * 2, y: 0, duration: NSTimeInterval(size.width/100))
-            var removePipes = SKAction.removeFromParent()
-            var moveAndRemove = SKAction.sequence([movePipes, removePipes])
-            topPipe.runAction(moveAndRemove)
-            bottomPipe.runAction(moveAndRemove)
-        
-            addChild(topPipe)
-            addChild(bottomPipe)
         }
+        
+        var pipeOffset = CGFloat(movementAmount) - size.height/4
+        
+        var topPipeTexture = SKTexture(imageNamed: "pipe1.png")
+        var topPipe = SKSpriteNode(texture: topPipeTexture)
+        topPipe.position = CGPoint(x: size.width, y: size.height/2 + topPipe.size.height/2 + gapHeight/2 + pipeOffset)
+        topPipe.zPosition = 0
+        
+        var bottomPipeTexture = SKTexture(imageNamed: "pipe2.png")
+        var bottomPipe = SKSpriteNode(texture: bottomPipeTexture)
+        
+        println(gapHeight)
+        println(pipeOffset)
+        println(size.height)
+        
+        bottomPipe.position = CGPoint(x: size.width, y: size.height/2 - bottomPipe.size.height/2 - gapHeight/2 + pipeOffset)
+        bottomPipe.zPosition = 0
+        
+        // collisions
+        topPipe.physicsBody = SKPhysicsBody(rectangleOfSize: topPipe.size)
+        topPipe.physicsBody?.categoryBitMask = objectGroup
+        topPipe.physicsBody?.dynamic = false
+        
+        bottomPipe.physicsBody = SKPhysicsBody(rectangleOfSize: bottomPipe.size)
+        bottomPipe.physicsBody?.categoryBitMask = objectGroup
+        bottomPipe.physicsBody?.dynamic = false
+        
+        // move pipes
+        var movePipes = SKAction.moveByX(-size.width * 2, y: 0, duration: NSTimeInterval(size.width/100))
+        var removePipes = SKAction.removeFromParent()
+        var moveAndRemove = SKAction.sequence([movePipes, removePipes])
+        topPipe.runAction(moveAndRemove)
+        bottomPipe.runAction(moveAndRemove)
+        
+        addChild(topPipe)
+        addChild(bottomPipe)
+        
     }
-
+    
     func createForeground(){
         var foregroundTexture = SKTexture(imageNamed: "foreground2.png")
         var foreground = SKSpriteNode(texture: foregroundTexture)
-//        foreground.position = CGPointMake(self.frame.size.width/2, self.frame.size.height + 100)
-//        foreground.size.height = self.frame.height
-//        foreground.size.width = self.frame.width
+        //        foreground.position = CGPointMake(self.frame.size.width/2, self.frame.size.height + 100)
+        //        foreground.size.height = self.frame.height
+        //        foreground.size.width = self.frame.width
         var moveLeft = SKAction.moveByX(-foregroundTexture.size().width, y: 0, duration: 2)
         var moveRight = SKAction.moveByX(foregroundTexture.size().width, y: 0, duration: 0)
         var moveAction = SKAction.sequence([moveLeft, moveRight])
@@ -222,7 +209,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for var i:CGFloat = 0;i<3;i++ {
             foreground = SKSpriteNode(texture: foregroundTexture)
             foreground.position = CGPoint(x: size.width/2 + foregroundTexture.size().width * i, y: foregroundTexture.size().height/2)
-//            foreground.size.height = self.frame.size.height
+            //            foreground.size.height = self.frame.size.height
             foreground.runAction(repeatForever)
             foreground.zPosition = 2
             addChild(foreground)
@@ -251,18 +238,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             bird.physicsBody?.velocity = CGVectorMake(0, 0)
             bird.physicsBody?.applyImpulse(CGVectorMake(0, 50))
             
-        }
-        else if (stopped==true){
-            point = -1
-            createBird()
-            status.text = ""
-            restart.text = ""
-            stopped = false
-            collision = false
-            pointBoard.text = "0"
+            
         }
     }
-   
+    
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
     }
