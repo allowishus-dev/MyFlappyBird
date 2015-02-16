@@ -6,7 +6,6 @@
 	<string></string>
 	<key>UIAppFonts</key>
 	<array>
-		<string>BMutopia.TTF</string>
 		<string>mizufalp.ttf</string>
 	</array>
 	<key>CFBundleDevelopmentRegion</key>

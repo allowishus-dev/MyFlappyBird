@@ -7,8 +7,10 @@
 //
 
 import SpriteKit
+import AVFoundation
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
+    var musicPlayer: AVAudioPlayer!
     
     // global holder for bird sprite, global to detect collisions
     var bird = SKSpriteNode()
@@ -16,16 +18,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var pointBoard = SKLabelNode()
     var highBoard = SKLabelNode()
 
-    var status = SKLabelNode()
-    var restart = SKLabelNode()
+    var gameOverLabel = SKLabelNode()
+    var highscoreList = SKNode()
     
     var topPipe = SKSpriteNode()
     var bottomPipe = SKSpriteNode()
     
+    var movingObjects = SKNode()
+    
     // global holder for bird animations, global to be able to change the animation
     var alternateTexture = SKAction()
  
-    var point = -1
+    var point = 0
     var high = 0
     
     var collision = false
@@ -34,6 +38,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // ???
     let birdGroup:UInt32 = 1
     let objectGroup:UInt32 = 2
+    let gapGroup:UInt32 = 0
+
+    func createHighScoreList() {
+        // TODO load high score
+        
+        
+    }
     
     // main method
     override func didMoveToView(view: SKView) {
@@ -43,11 +54,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // ????
         self.physicsWorld.contactDelegate = self
         
+        playBackgroundMusic("Klungos_Arcade.mp3")
+        
         createGround()
         createBackground()
         createForeground()
         createPointBoard()
         createStatus()
+        
+        addChild(movingObjects)
         
         restartGameScene()
     }
@@ -66,19 +81,50 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     }
     
+    func playBackgroundMusic(filename: String) {
+        let url = NSBundle.mainBundle().URLForResource(
+            filename, withExtension: nil)
+        var error: NSError? = nil
+        musicPlayer = AVAudioPlayer(contentsOfURL: url, error: &error)
+        musicPlayer.numberOfLoops = -1
+        musicPlayer.prepareToPlay()
+        musicPlayer.play()
+    }
+    
     func didBeginContact(contact: SKPhysicsContact) {
-        var explodeTexture1 = SKTexture(imageNamed: "explode1.png")
-        var explodeTexture2 = SKTexture(imageNamed: "explode2.png")
-        var explodeTexture3 = SKTexture(imageNamed: "explode3.png")
-        var explodeTexture4 = SKTexture(imageNamed: "explode4.png")
-        var explodeTexture5 = SKTexture(imageNamed: "explode5.png")
-        
-        alternateTexture = SKAction.animateWithTextures([explodeTexture1, explodeTexture2, explodeTexture3, explodeTexture4, explodeTexture5], timePerFrame: 0.1)
-        var repeatAndKill = SKAction.repeatAction(alternateTexture, count: 10)
-        bird.runAction(repeatAndKill)
-        
-        collision = true
+        if contact.bodyA.categoryBitMask == gapGroup || contact.bodyB.categoryBitMask == gapGroup{
+            if collision == false {
+                
+                runAction(SKAction.playSoundFileNamed("coin.wav", waitForCompletion: false))
+                
+                point++
+                pointBoard.text = String(point)
+                if (high < point){
+                    high = point
+                    highBoard.text = "hi " + String(high)
+                }
+            }
+        }
+        else {
 
+            var explodeTexture1 = SKTexture(imageNamed: "explode1.png")
+            var explodeTexture2 = SKTexture(imageNamed: "explode2.png")
+            var explodeTexture3 = SKTexture(imageNamed: "explode3.png")
+            var explodeTexture4 = SKTexture(imageNamed: "explode4.png")
+            var explodeTexture5 = SKTexture(imageNamed: "explode5.png")
+        
+            if collision == false {
+            
+                runAction(SKAction.playSoundFileNamed("explosion.wav",
+                waitForCompletion: false))
+            }
+        
+            alternateTexture = SKAction.animateWithTextures([explodeTexture1, explodeTexture2, explodeTexture3, explodeTexture4, explodeTexture5], timePerFrame: 0.1)
+            var repeatAndKill = SKAction.repeatAction(alternateTexture, count: 10)
+            bird.runAction(repeatAndKill)
+        
+            collision = true
+        }
     }
     
     func createGround(){
@@ -111,19 +157,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
 
     func createStatus(){
-        status = SKLabelNode(fontNamed: "MizuFontAlphabet")
-        status.text = ""
-        status.fontSize = 60
-        status.position = CGPointMake(self.frame.size.width/2, self.frame.size.height/2+40)
+        gameOverLabel = SKLabelNode(fontNamed: "MizuFontAlphabet")
+        gameOverLabel.text = ""
+        gameOverLabel.fontSize = 60
+        gameOverLabel.position = CGPointMake(self.frame.size.width/2, self.frame.size.height/2+40)
 
-        addChild(status)
+        addChild(gameOverLabel)
         
-        restart = SKLabelNode(fontNamed: "MizuFontAlphabet")
-        restart.text = ""
-        restart.fontSize = 36
-        restart.position = CGPointMake(self.frame.size.width/2, self.frame.size.height/2-10)
-        
-        addChild(restart)
+//        restart = SKLabelNode(fontNamed: "MizuFontAlphabet")
+//        restart.text = ""
+//        restart.fontSize = 36
+//        restart.position = CGPointMake(self.frame.size.width/2, self.frame.size.height/2-10)
+//        
+//        addChild(restart)
         
     }
     
@@ -133,7 +179,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         background.position = CGPointMake(self.frame.size.width/2, self.frame.size.height/2)
         background.size.height = self.frame.height
         background.size.width = self.frame.width
-        background.zPosition = -1
+        
         var moveLeft = SKAction.moveByX(-backgroundTexture.size().width, y: 0, duration: 25)
         var moveRight = SKAction.moveByX(backgroundTexture.size().width, y: 0, duration: 0)
         var moveAction = SKAction.sequence([moveLeft, moveRight])
@@ -144,6 +190,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             background.position = CGPoint(x: size.width/2 + backgroundTexture.size().width * i, y: CGRectGetMidY(self.frame))
             background.size.height = self.frame.size.height
             background.runAction(repeatForever)
+            background.zPosition = -1
             addChild(background)
         }
     }
@@ -154,25 +201,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         if (collision == true){
             
-            status.text = "game over!"
+            gameOverLabel.text = "game over!"
             
-            restart.text = "restart"
+            createHighScoreList()
             
             stopped = true
             
             bird.removeFromParent()
-            topPipe.removeFromParent()
-            bottomPipe.removeFromParent()
+            
+            movingObjects.removeAllChildren()
             
         }
         else {
-            point = point + 1
-            pointBoard.text = String(point)
-            
-            if (high < point){
-                high = point
-                highBoard.text = "hi " + String(high)
-            }
             
             var pipeOffset = CGFloat(movementAmount) - size.height/4
         
@@ -202,9 +242,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             var moveAndRemove = SKAction.sequence([movePipes, removePipes])
             topPipe.runAction(moveAndRemove)
             bottomPipe.runAction(moveAndRemove)
-        
-            addChild(topPipe)
-            addChild(bottomPipe)
+            
+            // make gap
+            var gap = SKNode()
+            gap.position = CGPoint(x: size.width+topPipe.size.width/2+bird.size.width/2, y: CGRectGetMidY(self.frame) + pipeOffset)
+            gap.physicsBody = SKPhysicsBody(rectangleOfSize: CGSize(width: 2, height: gapHeight))
+            gap.physicsBody?.dynamic=false
+            gap.physicsBody?.categoryBitMask=gapGroup
+            gap.physicsBody?.contactTestBitMask=birdGroup
+            gap.runAction(moveAndRemove)
+            
+            movingObjects.addChild(gap)
+            
+            movingObjects.addChild(topPipe)
+            movingObjects.addChild(bottomPipe)
         }
     }
 
@@ -253,10 +304,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
         }
         else if (stopped==true){
-            point = -1
+            point = 0
             createBird()
-            status.text = ""
-            restart.text = ""
+            gameOverLabel.text = ""
+//            restart.text = ""
             stopped = false
             collision = false
             pointBoard.text = "0"
