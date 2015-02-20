@@ -26,13 +26,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var movingObjects = SKNode()
     
+    var highscoreLabels = SKNode()
+    
     // global holder for bird animations, global to be able to change the animation
     var alternateTexture = SKAction()
  
     var point = 0
     var high = 0
     
+    var userName = "Bjørn"
+    
     var collision = false
+    
+    var showHigh = true
 
     var stopped = false
     // ???
@@ -115,6 +121,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
             if collision == false {
             
+                // send highscore
+                // call sendToServer
+                sendPostRequest()
+                
                 runAction(SKAction.playSoundFileNamed("explosion.wav",
                 waitForCompletion: false))
             }
@@ -124,7 +134,45 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             bird.runAction(repeatAndKill)
         
             collision = true
+           
+            
+            
         }
+    }
+    
+    func processResponse(data: String){
+        var lineArray=data.componentsSeparatedByString("-")
+        var lineNumber: CGFloat = 0
+        for string:String in lineArray {
+            createHighScoreLine(string, lineNumber: lineNumber)
+            lineNumber++
+        }
+    }
+    
+    func sendPostRequest() {
+        // post doesn't show url in adressbar in a browser
+        var URL: NSURL = NSURL(string: "http://www.joneikholm.dk/test/hs_QrwieKBnM842xZPQq.php")!
+        var request: NSMutableURLRequest = NSMutableURLRequest(URL: URL)
+        request.HTTPMethod = "POST"
+        var bodyData = "name=\(userName)&score=\(point)"
+        request.HTTPBody = bodyData.dataUsingEncoding(NSUTF8StringEncoding)
+        NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue()){
+            (response, data, error) in
+            var responseString = NSString(data: data, encoding: NSUTF8StringEncoding)
+//            println("server says: \(responseString)")
+            self.processResponse(responseString!)
+            
+        }
+        
+    }
+    
+    func createHighScoreLine(text:String, lineNumber: CGFloat){
+        
+        var label = SKLabelNode(fontNamed: "MizuFontAlphabet")
+        label.text=text
+        label.position = CGPoint(x: CGRectGetMidX(self.frame), y: CGRectGetMidY(self.frame) + 340 - lineNumber * 36)
+        label.zPosition = 17
+        highscoreLabels.addChild(label)
     }
     
     func createGround(){
@@ -160,7 +208,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameOverLabel = SKLabelNode(fontNamed: "MizuFontAlphabet")
         gameOverLabel.text = ""
         gameOverLabel.fontSize = 60
-        gameOverLabel.position = CGPointMake(self.frame.size.width/2, self.frame.size.height/2+40)
+        gameOverLabel.position = CGPointMake(self.frame.size.width/2, self.frame.size.height/2-40)
 
         addChild(gameOverLabel)
         
@@ -203,7 +251,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             gameOverLabel.text = "game over!"
             
-            createHighScoreList()
+            if (showHigh==true) {
+                addChild(highscoreLabels)
+                showHigh = false
+            }
             
             stopped = true
             
@@ -311,6 +362,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             stopped = false
             collision = false
             pointBoard.text = "0"
+            
+            // remove highscore labels
+            showHigh = true
+            highscoreLabels.removeAllChildren()
+            highscoreLabels.removeFromParent()
+            
+            
         }
     }
    
