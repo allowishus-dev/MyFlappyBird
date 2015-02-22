@@ -8,17 +8,30 @@
 
 import SpriteKit
 import AVFoundation
+import Foundation
+import SystemConfiguration
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
+
     var musicPlayer: AVAudioPlayer!
+    var coinPlayer: AVAudioPlayer!
+    var explodePlayer: AVAudioPlayer!
     
     // global holder for bird sprite, global to detect collisions
     var bird = SKSpriteNode()
 
     var pointBoard = SKLabelNode()
     var highBoard = SKLabelNode()
+    
+    var volume = SKSpriteNode()
+    var volumeOnTexture = SKTexture(imageNamed: "volumeOn")
+    var volumeOffTexture = SKTexture(imageNamed: "volumeOff")
+    
+    var soundOn = true
 
     var gameOverLabel = SKLabelNode()
+    var gameOverLabel2 = SKLabelNode()
+
     var highscoreList = SKNode()
     
     var topPipe = SKSpriteNode()
@@ -34,7 +47,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var point = 0
     var high = 0
     
-    var userName = "Bjørn"
+    var userName = "er"
     
     var collision = false
     
@@ -47,9 +60,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let gapGroup:UInt32 = 0
 
     func createHighScoreList() {
-        // TODO load high score
+        var highBackTexture = SKTexture(imageNamed: "highBack.png")
+        var highBack = SKSpriteNode(texture: highBackTexture)
+        highBack.zPosition = 1
+        highBack.setScale(2)
+        highBack.position = CGPoint(x: CGRectGetMidX(self.frame), y: CGRectGetMidY(self.frame))
+        highscoreLabels.addChild(highBack)
         
-        
+        if isConnectedToNetwork() {
+            sendPostRequest()
+        }
+        else {
+            createHighScoreLine("[no network]", lineNumber: 4)
+        }
     }
     
     // main method
@@ -60,7 +83,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // ????
         self.physicsWorld.contactDelegate = self
         
-        playBackgroundMusic("Klungos_Arcade.mp3")
+        setupSound()
         
         createGround()
         createBackground()
@@ -71,6 +94,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(movingObjects)
         
         restartGameScene()
+    }
+    
+    func setupSound() {
+        let urlCoin = NSBundle.mainBundle().URLForResource("coin.wav", withExtension: nil)
+        var errorCoin: NSError? = nil
+        coinPlayer = AVAudioPlayer(contentsOfURL: urlCoin, error: &errorCoin)
+        coinPlayer.numberOfLoops = 0
+        coinPlayer.prepareToPlay()
+        
+        let urlExplode = NSBundle.mainBundle().URLForResource("explosion.wav", withExtension: nil)
+        var errorExplode: NSError? = nil
+        explodePlayer = AVAudioPlayer(contentsOfURL: urlExplode, error: &errorExplode)
+        explodePlayer.numberOfLoops = 0
+        explodePlayer.prepareToPlay()
+        
+        playBackgroundMusic("Klungos_Arcade.mp3")
     }
     
     func restartGameScene(){
@@ -101,10 +140,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if contact.bodyA.categoryBitMask == gapGroup || contact.bodyB.categoryBitMask == gapGroup{
             if collision == false {
                 
-                runAction(SKAction.playSoundFileNamed("coin.wav", waitForCompletion: false))
-                
+//                runAction(SKAction.playSoundFileNamed("coin.wav", waitForCompletion: false))
+                if soundOn {
+                    coinPlayer.play()
+                }
+         
                 point++
+                
                 pointBoard.text = String(point)
+                
                 if (high < point){
                     high = point
                     highBoard.text = "hi " + String(high)
@@ -118,15 +162,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             var explodeTexture3 = SKTexture(imageNamed: "explode3.png")
             var explodeTexture4 = SKTexture(imageNamed: "explode4.png")
             var explodeTexture5 = SKTexture(imageNamed: "explode5.png")
-        
-            if collision == false {
             
-                // send highscore
-                // call sendToServer
-                sendPostRequest()
+            if collision == false {
+            // if first collision in crash
                 
-                runAction(SKAction.playSoundFileNamed("explosion.wav",
-                waitForCompletion: false))
+                if soundOn {
+                    explodePlayer.play()
+                }
             }
         
             alternateTexture = SKAction.animateWithTextures([explodeTexture1, explodeTexture2, explodeTexture3, explodeTexture4, explodeTexture5], timePerFrame: 0.1)
@@ -134,18 +176,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             bird.runAction(repeatAndKill)
         
             collision = true
-           
-            
-            
-        }
-    }
-    
-    func processResponse(data: String){
-        var lineArray=data.componentsSeparatedByString("-")
-        var lineNumber: CGFloat = 0
-        for string:String in lineArray {
-            createHighScoreLine(string, lineNumber: lineNumber)
-            lineNumber++
         }
     }
     
@@ -156,25 +186,44 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         request.HTTPMethod = "POST"
         var bodyData = "name=\(userName)&score=\(point)"
         request.HTTPBody = bodyData.dataUsingEncoding(NSUTF8StringEncoding)
+        
         NSURLConnection.sendAsynchronousRequest(request, queue: NSOperationQueue.mainQueue()){
             (response, data, error) in
-            var responseString = NSString(data: data, encoding: NSUTF8StringEncoding)
-//            println("server says: \(responseString)")
-            self.processResponse(responseString!)
-            
+            if data != nil {
+                var responseString = NSString(data: data, encoding: NSUTF8StringEncoding)
+                //            println("server says: \(responseString)")
+                self.processResponse(responseString!)
+            }
         }
-        
+    }
+    
+    func processResponse(data: String){
+        var lineArray = data.componentsSeparatedByString("-")
+        var lineNumber: CGFloat = 0
+        for string:String in lineArray {
+            createHighScoreLine(string, lineNumber: lineNumber)
+            lineNumber++
+        }
     }
     
     func createHighScoreLine(text:String, lineNumber: CGFloat){
+        var entries = text.componentsSeparatedByString(",")
         
-        var label = SKLabelNode(fontNamed: "MizuFontAlphabet")
-        label.text=text
-        label.position = CGPoint(x: CGRectGetMidX(self.frame), y: CGRectGetMidY(self.frame) + 340 - lineNumber * 36)
-        label.zPosition = 17
-        highscoreLabels.addChild(label)
+        var nameLabel = SKLabelNode(fontNamed: "MizuFontAlphabet")
+        nameLabel.text=entries.first!
+        nameLabel.position = CGPoint(x: CGRectGetMidX(self.frame)-160, y: CGRectGetMidY(self.frame) + 86 - lineNumber * 36)
+        nameLabel.zPosition = 2
+        nameLabel.horizontalAlignmentMode = .Left
+        highscoreLabels.addChild(nameLabel)
+        
+        var scoreLabel = SKLabelNode(fontNamed: "MizuFontAlphabet")
+        scoreLabel.text=entries.last!
+        scoreLabel.position = CGPoint(x: CGRectGetMidX(self.frame)+160, y: CGRectGetMidY(self.frame) + 86 - lineNumber * 36)
+        scoreLabel.zPosition = 2
+        scoreLabel.horizontalAlignmentMode = .Right
+        highscoreLabels.addChild(scoreLabel)
     }
-    
+
     func createGround(){
         // make ground
         var ground = SKNode()
@@ -201,6 +250,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         highBoard.position = CGPointMake(self.frame.size.width/2-208, self.frame.size.height/2+350)
         highBoard.horizontalAlignmentMode = .Left
         addChild(highBoard)
+        
+        volume = SKSpriteNode(texture: volumeOnTexture)
+//        volume.setScale(1.16)
+        volume.position = CGPointMake(self.frame.size.width/2+16, self.frame.size.height/2+358)
+        addChild(volume)
 
     }
 
@@ -208,17 +262,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameOverLabel = SKLabelNode(fontNamed: "MizuFontAlphabet")
         gameOverLabel.text = ""
         gameOverLabel.fontSize = 60
-        gameOverLabel.position = CGPointMake(self.frame.size.width/2, self.frame.size.height/2-40)
+        gameOverLabel.position = CGPointMake(self.frame.size.width/2, self.frame.size.height/2+220)
+        gameOverLabel.zPosition = 2
 
         addChild(gameOverLabel)
         
-//        restart = SKLabelNode(fontNamed: "MizuFontAlphabet")
-//        restart.text = ""
-//        restart.fontSize = 36
-//        restart.position = CGPointMake(self.frame.size.width/2, self.frame.size.height/2-10)
-//        
-//        addChild(restart)
+        gameOverLabel2 = SKLabelNode(fontNamed: "MizuFontAlphabet")
+        gameOverLabel2.text = ""
+        gameOverLabel2.fontSize = 60
+        gameOverLabel2.position = CGPointMake(self.frame.size.width/2, self.frame.size.height/2+160)
+        gameOverLabel2.zPosition = 2
         
+        addChild(gameOverLabel2)
     }
     
     func createBackground(){
@@ -249,9 +304,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         if (collision == true){
             
-            gameOverLabel.text = "game over!"
+            gameOverLabel.text = "game"
+            gameOverLabel2.text = "over"
             
             if (showHigh==true) {
+                createHighScoreList()
+                
                 addChild(highscoreLabels)
                 showHigh = false
             }
@@ -347,18 +405,40 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         addChild(bird)
     }
-    
+//    480 x 752 til 530 x 709
     override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
-        if (collision == false){
+        var touchPoint = touches.anyObject()?.locationInNode(self)
+        var x = touchPoint?.x
+        var y = touchPoint?.y
+               
+        if (x < 555 && x > 505 && y < 760 && y > 716) {
+            if soundOn {
+                soundOn = false
+                musicPlayer.stop()
+                volume.texture = volumeOffTexture
+            }
+            else {
+                soundOn = true
+                musicPlayer.play()
+                volume.texture = volumeOnTexture
+            }
+        }
+        else if (collision == false){
+
+            // ------------ if screen is pressed when on game screen when not crashed ------------
+            
             bird.physicsBody?.velocity = CGVectorMake(0, 0)
             bird.physicsBody?.applyImpulse(CGVectorMake(0, 50))
             
         }
         else if (stopped==true){
+            
+            // ------------ if screen is pressed when on highscore screen ------------
+            
             point = 0
             createBird()
             gameOverLabel.text = ""
-//            restart.text = ""
+            gameOverLabel2.text = ""
             stopped = false
             collision = false
             pointBoard.text = "0"
@@ -367,12 +447,31 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             showHigh = true
             highscoreLabels.removeAllChildren()
             highscoreLabels.removeFromParent()
-            
-            
         }
     }
    
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
+    }
+    
+    func isConnectedToNetwork() -> Bool {
+        
+        var zeroAddress = sockaddr_in(sin_len: 0, sin_family: 0, sin_port: 0, sin_addr: in_addr(s_addr: 0), sin_zero: (0, 0, 0, 0, 0, 0, 0, 0))
+        zeroAddress.sin_len = UInt8(sizeofValue(zeroAddress))
+        zeroAddress.sin_family = sa_family_t(AF_INET)
+        
+        let defaultRouteReachability = withUnsafePointer(&zeroAddress) {
+            SCNetworkReachabilityCreateWithAddress(nil, UnsafePointer($0)).takeRetainedValue()
+        }
+        
+        var flags: SCNetworkReachabilityFlags = 0
+        if SCNetworkReachabilityGetFlags(defaultRouteReachability, &flags) == 0 {
+            return false
+        }
+        
+        let isReachable = (flags & UInt32(kSCNetworkFlagsReachable)) != 0
+        let needsConnection = (flags & UInt32(kSCNetworkFlagsConnectionRequired)) != 0
+        
+        return (isReachable && !needsConnection) ? true : false
     }
 }
